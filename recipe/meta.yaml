@@ -1,6 +1,5 @@
 {% set name = "pipfile" %}
 {% set version = "0.0.2" %}
-{% set hash_type = "sha256" %}
 {% set hash = "f7d9f15de8b660986557eb3cc5391aa1a16207ac41bc378d03f414762d36c984" %}
 
 package:
@@ -9,24 +8,26 @@ package:
 
 source:
   fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  {{ hash_type }}: {{ hash }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ hash }}
 
 build:
-  number: 0
+  number: 1
   noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
-  build:
-    - python
+  host:
+    - python {{ python_min }}
     - pip
 
   run:
-    - python
+    - python >={{ python_min }}
     - toml
 
 test:
+  requires:
+    - python {{ python_min }}
   imports:
     - pipfile
     - pipfile.api
